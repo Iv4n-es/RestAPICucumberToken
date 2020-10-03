@@ -16,10 +16,7 @@ import java.util.Map;
 
 import static configuration.Configuration.*;
 
-/**
- * @autor : eynar.pari
- * @date : 26/09/2020.
- **/
+
 public class MyStepdefs {
 
     ResponseInformation response = new ResponseInformation();
@@ -48,7 +45,9 @@ public class MyStepdefs {
 
     @And("^I expected the response body is equal$")
     public void iExpectedTheResponseBodyIsEqual(String expectedResponseBody) throws JSONException {
+        System.out.println(expectedResponseBody);
         System.out.println("Response Body "+this.replaceVariables(response.getResponseBody()));
+
         Assert.assertTrue("ERROR el response body es incorrecto",JsonHelper.areEqualJSON(this.replaceVariables(expectedResponseBody),response.getResponseBody()));
     }
 
@@ -56,15 +55,13 @@ public class MyStepdefs {
     public void iGetThePropertyValueIdAndSaveOnID_PROJECT(String property, String nameVariable) throws JSONException {
         String value =JsonHelper.getValueFromJSON(response.getResponseBody(),property);
         variables.put(nameVariable,value);
-        System.out.println(" varaible : "+nameVariable+ " value : "+variables.get(nameVariable));
+        System.out.println(" variable : "+nameVariable+ " value : "+variables.get(nameVariable));
     }
 
     private String replaceVariables(String value){
-        for (String key:this.variables.keySet()
-             ) {
+        for (String key:this.variables.keySet()) {
             value = value.replace(key,this.variables.get(key));
         }
         return value;
     }
-
 }

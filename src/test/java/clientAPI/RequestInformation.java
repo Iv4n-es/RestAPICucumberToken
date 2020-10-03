@@ -5,10 +5,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @autor : eynar.pari
- * @date : 26/09/2020.
- **/
 public class RequestInformation {
     private String url;
     private Map<String, String> params = new HashMap<>();

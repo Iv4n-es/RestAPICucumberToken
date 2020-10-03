@@ -38,7 +38,7 @@ configurations {
         extendsFrom testImplementation
     }
 }
-//gradle clean cucumber -Psuite=@Eynar
+//gradle clean cucumber -Psuite=@Ivan
 task cucumber() {
     dependsOn assemble, compileTestJava
     doLast {

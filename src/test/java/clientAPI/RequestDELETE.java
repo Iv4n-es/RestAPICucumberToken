@@ -1,14 +1,8 @@
 package clientAPI;
 
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-
-/**
- * @autor : eynar.pari
- * @date : 26/09/2020.
- **/
 public class RequestDELETE extends RequestClient {
     @Override
     public ResponseInformation send(RequestInformation request) {
