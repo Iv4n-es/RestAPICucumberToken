@@ -10,30 +10,36 @@ import cucumber.api.java.en.When;
 import helpers.JsonHelper;
 import org.json.JSONException;
 import org.junit.Assert;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import static configuration.Configuration.*;
 
 
 public class MyStepdefs {
 
     ResponseInformation response = new ResponseInformation();
-    Map<String,String> variables= new HashMap<>();
+    Map<String,String> variables = new HashMap<>();
+    String authStringEnc;
 
 
     @Given("^I have authentication to todo\\.ly$")
-    public void iHaveAuthenticationToTodoLy() {
-    }
+    public void iHaveAuthenticationToTodoLy() {}
 
-    @When("^I send (POST|PUT|DELETE|GET) request '(.*)' with json$")
-    public void iSendPOSTRequestApiProjectsJsonWithJson(String method,String url, String jsonBody) {
+    @When("^I send (POST|PUT|DELETE|GET) request '(.*)' with '(.*)' and json$")
+    public void iSendPOSTRequestApiAuthenticationTokenJsonWithBASIC_AUTHENTICATION(String method, String url,String authentication, String jsonBody) {
         RequestInformation request = new RequestInformation();
         request.setUrl(HOST+this.replaceVariables(url));
         request.setBody(this.replaceVariables(jsonBody));
-        request.addHeaders(BASIC_AUTHENTICATION_HEADER,BASIC_AUTHENTICATION);
 
+        switch (authentication){
+            case "BASIC_AUTHENTICATION":
+                request.addHeaders(BASIC_AUTHENTICATION_HEADER, authStringEnc);
+                break;
+            case "TOKEN_AUTHENTICATION":
+                request.addHeaders(TOKEN_AUTHENTICATION_HEADER, variables.get("TOKEN_STRING"));
+                System.out.println(TOKEN_AUTHENTICATION_HEADER+"<-->"+variables.get("TOKEN_STRING"));
+                break;
+        }
         response= FactoryRequest.make(method.toLowerCase()).send(request);
     }
 
@@ -47,13 +53,14 @@ public class MyStepdefs {
     public void iExpectedTheResponseBodyIsEqual(String expectedResponseBody) throws JSONException {
         System.out.println(expectedResponseBody);
         System.out.println("Response Body "+this.replaceVariables(response.getResponseBody()));
-
         Assert.assertTrue("ERROR el response body es incorrecto",JsonHelper.areEqualJSON(this.replaceVariables(expectedResponseBody),response.getResponseBody()));
     }
 
     @And("^I get the property value '(.*)' and save on (.*)$")
     public void iGetThePropertyValueIdAndSaveOnID_PROJECT(String property, String nameVariable) throws JSONException {
-        String value =JsonHelper.getValueFromJSON(response.getResponseBody(),property);
+
+        System.out.println(response.getResponseBody());
+        String value = JsonHelper.getValueFromJSON(response.getResponseBody(),property);
         variables.put(nameVariable,value);
         System.out.println(" variable : "+nameVariable+ " value : "+variables.get(nameVariable));
     }
@@ -63,5 +70,12 @@ public class MyStepdefs {
             value = value.replace(key,this.variables.get(key));
         }
         return value;
+    }
+
+    @When("^I am authenticated with the user '(.*)' and password '(.*)'$")
+    public void iAmAuthenticatedWithTheUserUSER_EMAILAndPasswordAbc(String user, String pwd) {
+        System.out.println(variables.get(user)+"<-->"+pwd);
+        authStringEnc = getBasicAuthentication(variables.get(user),pwd);
+        System.out.println(authStringEnc);
     }
 }

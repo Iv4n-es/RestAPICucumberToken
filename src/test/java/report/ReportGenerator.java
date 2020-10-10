@@ -12,7 +12,6 @@ public class ReportGenerator {
 
 
     public static void main(String[]args){
-        //String path="C:\\Users\\Eynar\\Desktop\\UCBRepositorios\\ucb_rest\\build\\reports\\cucumber\\";
         String path="C:\\Users\\gvane\\Documents\\DIPLOMADO UCB\\rest-items-project\\build\\reports\\cucumber\\";
 
         File reportOutPut= new File(path+"finalReportAPI");
